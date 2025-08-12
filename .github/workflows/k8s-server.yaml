@@ -25,10 +25,13 @@ jobs:
                     distribution: 'temurin'
                     architecture: x64
             -   name: 缓存 MAVEN 依赖项
-                run: mvn --batch-mode --update-snapshots verify
+                run: |
+                    cd springbootx9rzc
+                    mvn --batch-mode --update-snapshots verify
             # 编译打包
             -   name: 执行 MAVEN 打包命令，跳过测试代码
                 run: |
+                    cd springbootx9rzc
                     mvn clean package -Dmaven.test.skip=true
             -   name: 再次列举当前服务下打包后的文件目录结构
                 run: |
