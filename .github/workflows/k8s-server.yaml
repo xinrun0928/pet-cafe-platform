@@ -37,7 +37,7 @@ jobs:
                 run: ${{ secrets.DOCKER_LOGIN }}
             -   name: 构建 springbootx9rzc 镜像
                 run: |
-                    docker build -t ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.NAMESPACE }}/${{ env.APPLICATION_NAME }}:${{ env.VERSION }} -f "k8s/Dockerfile" ./
+                    docker build -t ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.NAMESPACE }}/${{ env.APPLICATION_NAME }}:${{ env.VERSION }} -f "springbootx9rzc/k8s/Dockerfile" ./
             -   name: 推送 springbootx9rzc 镜像
                 run: |
                     docker push ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.NAMESPACE }}/${{ env.APPLICATION_NAME }}:${{ env.VERSION }}
