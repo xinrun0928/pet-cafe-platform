@@ -1,0 +1,43 @@
+env:
+    APPLICATION_NAME: springbootx9rzc
+    VERSION: k8s-latest
+
+name: 构建k8s springbootx9rzc
+run-name: ${{ github.actor }} 正在构建 k8s springbootx9rzc 服务 🚀
+
+on:
+    workflow_dispatch:
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            -   run: echo "🔎 在仓库 ${{ github.repository }} 的分支为：${{ github.ref }} 触发了 ${{ github.event_name }} 事件."
+            -   name: 检出代码到 Github Actions 运行容器
+                uses: actions/checkout@v4
+            -   name: 列举当前服务下的文件目录结构
+                run: |
+                    ls
+            -   name: 向容器安装 Java 8 (JDK 8) 运行环境
+                uses: actions/setup-java@v4
+                with:
+                    java-version: '8'
+                    distribution: 'temurin'
+                    architecture: x64
+            -   name: 缓存 MAVEN 依赖项
+                run: mvn --batch-mode --update-snapshots verify
+            # 编译打包
+            -   name: 执行 MAVEN 打包命令，跳过测试代码
+                run: |
+                    mvn clean package -Dmaven.test.skip=true
+            -   name: 再次列举当前服务下打包后的文件目录结构
+                run: |
+                    ls ${{ env.APPLICATION_NAME }}
+            -   name: 登录阿里云容器镜像服务
+                run: ${{ secrets.DOCKER_LOGIN }}
+            -   name: 构建 springbootx9rzc 镜像
+                run: |
+                    docker build -t ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.NAMESPACE }}/${{ env.APPLICATION_NAME }}:${{ env.VERSION }} -f "k8s/Dockerfile" ./
+            -   name: 推送 springbootx9rzc 镜像
+                run: |
+                    docker push ${{ secrets.DOCKER_REGISTRY }}/${{ secrets.NAMESPACE }}/${{ env.APPLICATION_NAME }}:${{ env.VERSION }}
